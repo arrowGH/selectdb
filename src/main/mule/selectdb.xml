@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="61cfa67b-ff04-46c9-b34d-d6f0c1b2740b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="79b80f9c-986e-407e-b216-4e245d519931" >
+		<db:oracle-connection host="localhost" user="system" password="Oracle123" instance="orcl" />
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="686fcf27-cf83-45ff-978d-0c09b8cbf26c" >
+		<file:connection workingDir="D:\" />
+	</file:config>
+	<flow name="selectdbFlow" doc:id="e1d1fb51-ab7b-4680-a87a-424463272ac1" >
+		<http:listener doc:name="Listener" doc:id="cf448b82-e030-4a4f-b034-cc4ae5e83103" config-ref="HTTP_Listener_config" path="/select"/>
+		<db:select doc:name="Select" doc:id="07fe94a2-9b11-4c08-9b78-d2b47cf8ba8b" config-ref="Database_Config">
+			<db:sql >select * from account</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="1f415a69-8ce8-494a-aa32-03794664c6dc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="64ebd2f7-3fbc-40f6-bd14-349a148e4584" />
+		<file:write doc:name="Write" doc:id="1b665fc3-8d2f-4c6f-9978-fc225925e797" config-ref="File_Config" path="D:\\outbatch\\writetofile.json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="28132b49-1534-4c76-8ff0-911f3e799c3f" />
+	</flow>
+</mule>
