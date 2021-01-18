@@ -21,6 +21,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<db:select doc:name="Select" doc:id="07fe94a2-9b11-4c08-9b78-d2b47cf8ba8b" config-ref="Database_Config">
 			<db:sql >select * from account</db:sql>
 		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="d5748e59-4c41-4cab-a9aa-5daab3701e04" message="loogertotestcloningupdatedchangesintheflow"/>
 		<ee:transform doc:name="Transform Message" doc:id="1f415a69-8ce8-494a-aa32-03794664c6dc" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
